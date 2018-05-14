@@ -1,15 +1,18 @@
+# прописаны команды для хендлеров
+
 import weather
 import os
 import db
 from telegram import KeyboardButton, ReplyKeyboardMarkup
 
-
+# приветствие от бота
 def start_command(bot, update):
     welcome = 'Hello!\n' \
               'Type /help to find out how bot works.'
     bot.send_message(chat_id=update.message.chat_id, text=welcome)
 
 
+# описание доступных команд
 def help_command(bot, update):
     response = 'Type a name of the city to watch weather forecast\n' \
                'Note: \n' \
@@ -21,6 +24,10 @@ def help_command(bot, update):
     bot.send_message(chat_id=update.message.chat_id, text=response)
 
 
+# дейстивя на сообщение от юзера
+# если город, то выдаем прогноз погоды (функции в weather)
+# если выбранна кнопка смены дом. локации, то выводим инструкцию для ее смены
+# иначе - некорректный ввод
 def text_messg_command(bot, update):
     city = update.message.text
     if city == 'Change home location':
@@ -39,11 +46,15 @@ def text_messg_command(bot, update):
     os.remove('images/graph' + city + '.png')
 
 
+# достаем сохраненную домашнюю локации
+# храним ее в базе данных (подключаем из db)
 def get_home_city(bot, update):
     list_cities = db.get_cities(update.message.chat_id)
+    # если в базе еще нет сохраненной локации, то сообщаем об этом юзеру
     if len(list_cities) == 0:
         bot.send_message(chat_id=update.message.chat_id,
                          text='You haven\'t add your home location yet')
+    # создаем кнопки с выбором город/изменить город
     else:
         home = list_cities[0]
         button = [[KeyboardButton(home)],
@@ -56,6 +67,8 @@ def get_home_city(bot, update):
                          reply_markup=button_markup)
 
 
+# для смены домашней локации
+# удаляем из базы старый город, добавляем новый
 def set_home_location(bot, update):
     city = update.message.text.split()[-1]
     try:
