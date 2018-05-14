@@ -1,8 +1,12 @@
+# работа с данными с сайта openweathermap.org
+# для удобства подключена библиотека pyowm
+# для построения графиков пользуемся matplotlib
 import pyowm
 import config
 import matplotlib.pyplot as plt
 
 
+# сохраненние нужной информации
 def get(city):
     owm = pyowm.OWM(API_key=config.api_key, language='en')
     obs = owm.weather_at_place(city)
@@ -12,6 +16,7 @@ def get(city):
     return w, f, obs.get_location().get_country()
 
 
+# выделение нужной информации в словарь
 def format_weather(weather):
     t = weather.get_temperature(unit='celsius')
     ans = dict()
@@ -27,6 +32,8 @@ def format_weather(weather):
     return ans
 
 
+# построение графика по данным о температуре на ближайшие 5 дней
+# сохраняем его как файл .png (после отправки сразу же удаляем)
 def make_image(forecast, city):
     x_data = []
     y_data = []
@@ -44,6 +51,7 @@ def make_image(forecast, city):
     plt.savefig('images/graph' + city + '.png', format='png')
 
 
+# оформляем обработанную информацию для ответа юзеру
 def info(city):
     t_city = city
     raw_w, raw_f, country = get(city)
