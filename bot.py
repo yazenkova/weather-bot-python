@@ -1,3 +1,10 @@
+# прописаны основные хендлеры
+# команды для них лежат в commands
+# API, токен для бота и прокси лежат в config
+# наши команды: /start, /help,
+# /set - запоминает домашнюю локацию 
+# /home - предлагает узнать прогноз в домашней локации
+
 from telegram.ext import Updater, CommandHandler, MessageHandler, Filters
 import config
 import commands
