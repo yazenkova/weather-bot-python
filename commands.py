@@ -13,7 +13,7 @@ logging.basicConfig(format=u'%(levelname)-8s [%(asctime)s] %(message)s',
 
 def try_request_forecast(city, bot, update):
     try:
-        response, status = weather.info(city)
+        response = weather.information(city)
     except OWMError:
         logging.error(u'Incorrect request. There is no such city')
         bot.send_message(chat_id=update.message.chat_id,
@@ -30,7 +30,7 @@ def try_request_forecast(city, bot, update):
 def start_command(bot, update):
     logging.info(u'Try to call command /start')
     welcome = 'Hello!\n' \
-              'Type /help to find out how bot works.'
+              'Type /help to find out all possible commands.'
     bot.send_message(chat_id=update.message.chat_id, text=welcome)
     logging.info(u'Request completed')
 
@@ -39,8 +39,7 @@ def start_command(bot, update):
 def help_command(bot, update):
     logging.info(u'Try to call command /set')
     response = 'Type a name of the city to watch weather forecast\n' \
-               'Note: \n' \
-               'You can add "ru" or other 2-letter name of the country ' \
+               'Add "ru" or other 2-letter name of the country ' \
                'after comma to the end of request.\n' \
                'If you want to save your home location, ' \
                'type \'/set name of city\'\n' \
@@ -53,7 +52,7 @@ def help_command(bot, update):
 # если город, то выдаем прогноз погоды (функции в weather)
 # если выбранна кнопка смены дом. локации, то выводим инструкцию для ее смены
 # иначе - некорректный ввод
-def text_messg_command(bot, update):
+def text_message_command(bot, update):
     city = update.message.text
     logging.info(u'Try to request a forecast in "' + city + '"')
     if city == 'Change home location':
@@ -91,7 +90,7 @@ def set_home_location(bot, update):
         city = text[5:n]
         logging.info(u'Try to set home location as "' + city + '"')
     try:
-        response, status = weather.info(city)
+        response = weather.information(city)
     except OWMError:
         logging.error(u'Incorrect request. There is no such city')
         bot.send_message(chat_id=update.message.chat_id,
